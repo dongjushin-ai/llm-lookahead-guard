@@ -83,7 +83,7 @@ class Masker:
                     alias = "$" + alias
                 spans.append((a.start, a.end, alias))
         for d in find_dates(text, as_of):
-            if free(d.start, d.end):
+            if not d.relative and free(d.start, d.end):
                 alias = _date_alias(d, as_of)
                 self.mapping.setdefault(alias, d.text)
                 spans.append((d.start, d.end, alias))

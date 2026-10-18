@@ -141,3 +141,40 @@ def test_findings_sorted_by_severity(checker):
     sev = [f.severity for f in r.findings]
     order = {"error": 0, "warning": 1, "info": 2}
     assert sev == sorted(sev, key=order.__getitem__)
+
+
+# Masked offsets (D+n, M+n, Q+n, Y+n) still point after the decision date.
+def test_masked_future_fact_is_still_an_error(checker):
+    as_of = date(2023, 3, 1)
+    raw = "AAPL closed at 305.40 on 2023-05-26. Decide BUY or SELL."
+    masked = mask_text(raw, as_of).text
+    assert masked == "ASSET_1 closed at 305.40 on D+86. Decide BUY or SELL."
+    assert "LAG101" in rules(checker.check(Record(as_of=as_of, prompt=raw)), "error")
+    assert "LAG101" in rules(checker.check(Record(as_of=as_of, prompt=masked)), "error")
+
+
+@pytest.mark.parametrize("text", [
+    "Revenue was 12.3B in Q+1.",
+    "The stock rose 18% in M+2.",
+])
+def test_other_masked_future_offsets(checker, text):
+    assert "LAG101" in rules(checker.check(Record(as_of=date(2023, 3, 1), prompt=text)), "error")
+
+
+@pytest.mark.parametrize("text", [
+    "ASSET_1 closed at 250.10 on D-5 and rose 3% in M-1. Decide BUY or SELL.",
+    "ASSET_1 closed at 250.10 on D+0.",
+])
+def test_masked_past_prices_pass(checker, text):
+    r = checker.check(Record(as_of=date(2023, 3, 1), prompt=text))
+    assert [f.rule for f in r.findings if f.where == "prompt"] == []
+
+
+def test_masked_scheduled_offset_is_info(checker):
+    r = checker.check(Record(as_of=date(2023, 3, 1), prompt="Earnings are due D+3."))
+    assert [f.rule for f in r.findings if f.where == "prompt"] == ["LAG103"]
+
+
+def test_response_citing_masked_future(checker):
+    r = checker.check(Record(as_of=date(2023, 3, 1), prompt="Decide.", response="ASSET_1 closed at 305.40 on D+86."))
+    assert "LAG301" in rules(r, "error")

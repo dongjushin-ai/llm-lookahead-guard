@@ -34,3 +34,11 @@ def test_unmask_restores_assets_not_dates():
 def test_plain_text_untouched():
     text = "Momentum 0.71, RSI 55, volume 1.2x. Decide BUY or SELL."
     assert mask_text(text, AS_OF).text == text
+
+
+def test_mask_is_idempotent_and_keeps_numbers():
+    first = mask_text("AAPL closed at 250.10 on 2023-02-24 and 305.40 on 2023-05-26.", date(2023, 3, 1))
+    assert first.text == "ASSET_1 closed at 250.10 on D-5 and 305.40 on D+86."
+    again = mask_text(first.text, date(2023, 3, 1))
+    assert again.text == first.text
+    assert again.mapping == {}

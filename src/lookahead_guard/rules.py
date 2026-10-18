@@ -310,8 +310,10 @@ class Checker:
     def _identity_findings(self, text, as_of, dates, events, assets, exposed) -> List[Finding]:
         sev = "warning" if exposed else "info"
         out: List[Finding] = []
-        past_dates = [d for d in dates if not d.is_after(as_of) and d.granularity in ("day", "month", "quarter")]
-        years = [d for d in dates if not d.is_after(as_of) and d.granularity == "year"]
+        # Masked offsets (D-5) are the fix, not an identifier.
+        past = [d for d in dates if not d.is_after(as_of) and not d.relative]
+        past_dates = [d for d in past if d.granularity in ("day", "month", "quarter")]
+        years = [d for d in past if d.granularity == "year"]
         shown = past_dates + years
         if shown:
             sample = ", ".join(sorted({d.text for d in shown})[:4])

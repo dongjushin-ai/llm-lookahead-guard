@@ -51,6 +51,7 @@ class DateMention:
     latest: date
     granularity: str  # "day" | "month" | "quarter" | "year"
     inferred_year: bool = False
+    relative: bool = False  # a masked offset such as "D+86" (see mask.py)
 
     def is_after(self, as_of: date) -> bool:
         return self.earliest > as_of
@@ -157,6 +158,29 @@ def _r_year(m, as_of):
     return (date(year, 1, 1), date(year, 12, 31), "year", False)
 
 
+def _r_relative(m, as_of):
+    """Masked offsets (``D+86``, ``M-1``, ``Q+1``, ``Y-2``), the inverse of mask.py."""
+    if as_of is None:
+        return None
+    unit, n = m.group(1), int(m.group(2))
+    try:
+        if unit == "D":
+            d = as_of + timedelta(days=n)
+            return (d, d, "day", False)
+        if unit == "Y":
+            y = as_of.year + n
+            return (date(y, 1, 1), date(y, 12, 31), "year", False)
+        months = n if unit == "M" else 3 * n
+        start_month = as_of.month if unit == "M" else 3 * ((as_of.month - 1) // 3) + 1
+        idx = as_of.year * 12 + start_month - 1 + months
+        year, month = divmod(idx, 12)
+        if unit == "M":
+            return (date(year, month + 1, 1), _last_day(year, month + 1), "month", False)
+        return _quarter(year, month // 3 + 1)
+    except (ValueError, OverflowError):
+        return None
+
+
 # Order matters: earlier, more specific patterns claim their span first.
 _PATTERNS = [
     (re.compile(rf"\b({_YEAR})[-/.](\d{{1,2}})[-/.](\d{{1,2}})\b"), _r_iso_day),
@@ -169,6 +193,7 @@ _PATTERNS = [
     (re.compile(r"\bQ([1-4])(?:\s+|\s*'|-|\s*FY)?((?:19|20)\d{2}|\d{2})\b"), _r_q_year),
     (re.compile(r"\b([1-4])Q((?:19|20)\d{2}|\d{2})\b"), _r_nq_year),
     (re.compile(r"\b(?:FY|fiscal(?:\s+year)?)\s?((?:19|20)\d{2}|'?\d{2})\b"), _r_fiscal),
+    (re.compile(r"(?<![A-Za-z0-9_])([DMQY])([+-]\d{1,5})\b(?![.,]\d)"), _r_relative),
     (re.compile(rf"(?<![$\d.,])\b({_YEAR})\b(?![.,]\d)(?!\s*%)"), _r_year),
 ]
 
@@ -192,7 +217,8 @@ def find_dates(text: str, as_of: Optional[date] = None) -> List[DateMention]:
             earliest, latest, granularity, inferred = resolved
             claimed.append((start, end))
             found.append(
-                DateMention(m.group(0), start, end, earliest, latest, granularity, inferred)
+                DateMention(m.group(0), start, end, earliest, latest, granularity, inferred,
+                            relative=resolver is _r_relative)
             )
     found.sort(key=lambda d: d.start)
     return found
