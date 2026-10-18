@@ -1,0 +1,37 @@
+{
+  "_about": "Vendor-reported training/knowledge cutoffs. 'cutoff' is the LATEST date the model may have seen (training-data cutoff when the vendor gives one, otherwise the stated knowledge cutoff), read as the end of that month. Patterns are full-match regexes on a normalized model id (lowercase, provider prefix and version suffix stripped). Verify against the vendor docs before relying on a value; PRs welcome. Effective cutoffs can differ from reported ones (see arXiv 2403.12958).",
+  "_verified": "2026-10",
+  "models": [
+    {"id": "gpt-3.5-turbo", "vendor": "OpenAI", "cutoff": "2021-09", "kind": "knowledge", "patterns": ["gpt-3\\.5-turbo(-\\d{4})?(-16k)?(-instruct)?"]},
+    {"id": "gpt-4", "vendor": "OpenAI", "cutoff": "2021-09", "kind": "knowledge", "patterns": ["gpt-4(-0314|-0613)?", "gpt-4-32k(-0314|-0613)?"]},
+    {"id": "gpt-4-turbo", "vendor": "OpenAI", "cutoff": "2023-12", "kind": "knowledge", "patterns": ["gpt-4-turbo(-2024-04-09)?"]},
+    {"id": "gpt-4o", "vendor": "OpenAI", "cutoff": "2023-10", "kind": "knowledge", "patterns": ["gpt-4o(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "gpt-4o-mini", "vendor": "OpenAI", "cutoff": "2023-10", "kind": "knowledge", "patterns": ["gpt-4o-mini(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "gpt-4.1", "vendor": "OpenAI", "cutoff": "2024-06", "kind": "knowledge", "patterns": ["gpt-4\\.1(-mini|-nano)?(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "o1", "vendor": "OpenAI", "cutoff": "2023-10", "kind": "knowledge", "patterns": ["o1(-\\d{4}-\\d{2}-\\d{2})?", "o1-mini(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "o3-mini", "vendor": "OpenAI", "cutoff": "2023-10", "kind": "knowledge", "patterns": ["o3-mini(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "o3", "vendor": "OpenAI", "cutoff": "2024-06", "kind": "knowledge", "patterns": ["o3(-\\d{4}-\\d{2}-\\d{2})?", "o4-mini(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "gpt-5", "vendor": "OpenAI", "cutoff": "2024-09", "kind": "knowledge", "patterns": ["gpt-5(-\\d{4}-\\d{2}-\\d{2})?"]},
+    {"id": "gpt-5-mini", "vendor": "OpenAI", "cutoff": "2024-05", "kind": "knowledge", "patterns": ["gpt-5-(mini|nano)(-\\d{4}-\\d{2}-\\d{2})?"]},
+
+    {"id": "claude-3-opus", "vendor": "Anthropic", "cutoff": "2023-08", "kind": "training", "patterns": ["claude-3-opus(-\\d{8})?(-latest)?"]},
+    {"id": "claude-3-sonnet", "vendor": "Anthropic", "cutoff": "2023-08", "kind": "training", "patterns": ["claude-3-sonnet(-\\d{8})?"]},
+    {"id": "claude-3-haiku", "vendor": "Anthropic", "cutoff": "2023-08", "kind": "training", "patterns": ["claude-3-haiku(-\\d{8})?"]},
+    {"id": "claude-3-5-sonnet", "vendor": "Anthropic", "cutoff": "2024-04", "kind": "training", "patterns": ["claude-3[-.]5-sonnet(-\\d{8})?(-latest)?"]},
+    {"id": "claude-3-5-haiku", "vendor": "Anthropic", "cutoff": "2024-07", "kind": "training", "patterns": ["claude-3[-.]5-haiku(-\\d{8})?(-latest)?"]},
+    {"id": "claude-3-7-sonnet", "vendor": "Anthropic", "cutoff": "2024-11", "kind": "training", "patterns": ["claude-3[-.]7-sonnet(-\\d{8})?(-latest)?"]},
+    {"id": "claude-sonnet-4", "vendor": "Anthropic", "cutoff": "2025-03", "kind": "training", "patterns": ["claude-sonnet-4(-\\d{8})?", "claude-4-sonnet(-\\d{8})?"]},
+    {"id": "claude-opus-4", "vendor": "Anthropic", "cutoff": "2025-03", "kind": "training", "patterns": ["claude-opus-4(-\\d{8})?", "claude-4-opus(-\\d{8})?", "claude-opus-4-1(-\\d{8})?"]},
+    {"id": "claude-sonnet-4-5", "vendor": "Anthropic", "cutoff": "2025-07", "kind": "training", "patterns": ["claude-sonnet-4-5(-\\d{8})?"]},
+    {"id": "claude-haiku-4-5", "vendor": "Anthropic", "cutoff": "2025-07", "kind": "training", "patterns": ["claude-haiku-4-5(-\\d{8})?"]},
+
+    {"id": "gemini-2.0-flash", "vendor": "Google", "cutoff": "2024-08", "kind": "knowledge", "patterns": ["gemini-2\\.0-flash(-lite)?(-\\d{3})?"]},
+    {"id": "gemini-2.5", "vendor": "Google", "cutoff": "2025-01", "kind": "knowledge", "patterns": ["gemini-2\\.5-(pro|flash|flash-lite)(-\\d{3})?"]},
+
+    {"id": "llama-2", "vendor": "Meta", "cutoff": "2023-07", "kind": "training", "note": "Pretraining data to 2022-09; some tuning data to 2023-07.", "patterns": ["(meta-)?llama-?2-(7|13|70)b(-chat)?(-hf)?"]},
+    {"id": "llama-3-8b", "vendor": "Meta", "cutoff": "2023-03", "kind": "training", "patterns": ["(meta-)?llama-?3-8b(-instruct)?"]},
+    {"id": "llama-3-70b", "vendor": "Meta", "cutoff": "2023-12", "kind": "training", "patterns": ["(meta-)?llama-?3-70b(-instruct)?"]},
+    {"id": "llama-3.1", "vendor": "Meta", "cutoff": "2023-12", "kind": "training", "patterns": ["(meta-)?llama-?3[.-]1-(8|70|405)b(-instruct)?"]},
+    {"id": "llama-3.3", "vendor": "Meta", "cutoff": "2023-12", "kind": "training", "patterns": ["(meta-)?llama-?3[.-]3-70b(-instruct)?"]}
+  ]
+}

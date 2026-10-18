@@ -1,0 +1,5 @@
+{
+  "_comment": "Simple format: model id -> last date the model may have seen (YYYY-MM or YYYY-MM-DD).",
+  "my-finetune-v3": "2024-03",
+  "local-llama-quant": "2023-12-31"
+}

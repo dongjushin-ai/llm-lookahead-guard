@@ -1,0 +1,7 @@
+You are a swing-trading analyst. Today is March 1, 2023.
+
+AAPL closed at 147.92 yesterday (synthetic number). Q4 2022 revenue fell 5%.
+Consensus expects Q1 2023 EPS of 1.43; results are due on May 4, 2023.
+In hindsight, the post-earnings rally was the turning point.
+
+Decide BUY, SELL or HOLD for the next 15 trading days.
