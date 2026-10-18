@@ -1,5 +1,7 @@
 # llm-lookahead-guard
 
+[![PyPI](https://img.shields.io/pypi/v/llm-lookahead-guard)](https://pypi.org/project/llm-lookahead-guard/)
+
 <p align="center"><img src="https://raw.githubusercontent.com/dongjushin-ai/llm-lookahead-guard/main/docs/assets/demo.gif" alt="터미널 데모: 누수 로그 check(error) → mask → 다시 check(통과) → 마스킹 전후 A/B 차이" width="760"></p>
 
 **LLM 백테스트용 린터: 모델에 보낸 프롬프트와 받은 답에서 미래 정보 누수(look-ahead, temporal contamination)를 찾아냅니다. 오프라인, 의존성 0개, CI에 바로 붙습니다.**
@@ -31,7 +33,7 @@ demo_log.jsonl:1 [leaky-future-price]  as_of=2023-03-01  model=gpt-4o-2024-08-06
 ## 30초 빠른 시작
 
 ```bash
-pip install git+https://github.com/dongjushin-ai/llm-lookahead-guard
+pip install llm-lookahead-guard
 lookahead-guard demo                      # 내장 가상 로그로 바로 체험
 lookahead-guard check my_backtest.jsonl   # 내 로그 점검
 ```
@@ -67,7 +69,7 @@ OpenAI·Anthropic·LangChain 형식의 `messages` 목록도 됩니다(assistant 
 ## CI에서 쓰기
 
 ```yaml
-- run: pip install git+https://github.com/dongjushin-ai/llm-lookahead-guard
+- run: pip install llm-lookahead-guard
 - run: lookahead-guard check logs/*.jsonl --format github --fail-on error
 ```
 

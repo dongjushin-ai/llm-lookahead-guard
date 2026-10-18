@@ -1,5 +1,7 @@
 # llm-lookahead-guard
 
+[![PyPI](https://img.shields.io/pypi/v/llm-lookahead-guard)](https://pypi.org/project/llm-lookahead-guard/)
+
 <p align="center"><img src="https://raw.githubusercontent.com/dongjushin-ai/llm-lookahead-guard/main/docs/assets/demo.gif" alt="Terminal demo: check a leaky log (errors), mask it, check again (passes), then the masked-vs-raw A/B gap" width="760"></p>
 
 **A linter for LLM backtests: finds look-ahead (temporal contamination) leaks in the prompts you sent and the answers you got back. Offline, zero dependencies, CI-ready.**
@@ -40,7 +42,7 @@ demo_log.jsonl:1 [leaky-future-price]  as_of=2023-03-01  model=gpt-4o-2024-08-06
 ## 30-second quickstart
 
 ```bash
-pip install git+https://github.com/dongjushin-ai/llm-lookahead-guard
+pip install llm-lookahead-guard
 lookahead-guard demo                      # built-in synthetic log, no setup
 lookahead-guard check my_backtest.jsonl   # your own log
 ```
@@ -77,7 +79,7 @@ The bundled model table (`lookahead-guard cutoffs`) covers 49 OpenAI, Anthropic,
 ## Use it in CI
 
 ```yaml
-- run: pip install git+https://github.com/dongjushin-ai/llm-lookahead-guard
+- run: pip install llm-lookahead-guard
 - run: lookahead-guard check logs/*.jsonl --format github --fail-on error
 ```
 
