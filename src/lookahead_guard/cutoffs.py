@@ -24,6 +24,9 @@ class ModelCutoff:
     cutoff: date  # last day the model may have seen
     kind: str  # "training" | "knowledge" | "user"
     note: str = ""
+    source: str = ""  # URL of the vendor page the value was checked against
+    checked: str = ""  # date of that check (YYYY-MM-DD)
+    verified: bool = False  # True only when confirmed on an official vendor page
 
 
 def normalize_model_id(model: str) -> str:
@@ -65,6 +68,9 @@ class CutoffTable:
                     cutoff=parse_date(entry["cutoff"]),
                     kind=entry.get("kind", "knowledge"),
                     note=entry.get("note", ""),
+                    source=entry.get("source", ""),
+                    checked=entry.get("checked", ""),
+                    verified=bool(entry.get("verified", False)),
                 )
                 for pat in entry.get("patterns", [re.escape(entry["id"])]):
                     self._patterns.append((re.compile(pat), mc))

@@ -1,5 +1,7 @@
 # llm-lookahead-guard
 
+<p align="center"><img src="https://raw.githubusercontent.com/dongjushin-ai/llm-lookahead-guard/main/docs/assets/demo.gif" alt="터미널 데모: 누수 로그 check(error) → mask → 다시 check(통과) → 마스킹 전후 A/B 차이" width="760"></p>
+
 **LLM 백테스트용 린터: 모델에 보낸 프롬프트와 받은 답에서 미래 정보 누수(look-ahead, temporal contamination)를 찾아냅니다. 오프라인, 의존성 0개, CI에 바로 붙습니다.**
 
 [English README](README.md)
@@ -60,7 +62,7 @@ OpenAI·Anthropic·LangChain 형식의 `messages` 목록도 됩니다(assistant 
 | `LAG301` response-cites-future | error | **모델의 답**이 결정일 이후 사실을 서술 — 회상의 흔적 |
 | `LAG302` response-hindsight | warning | 답에 사후 서술 |
 
-내장 모델 기준일 표(`lookahead-guard cutoffs`)는 OpenAI·Anthropic·Google·Meta 28개 계열의 벤더 공개값입니다. `--cutoffs my_cutoffs.json`(`{"my-finetune-v3": "2024-03"}`)으로 추가하거나 `--cutoff 2024-06`으로 강제할 수 있습니다. 더 새 버전은 옛 항목에 매칭하지 않습니다(`claude-sonnet-4-6`은 `claude-sonnet-4` 날짜를 물려받지 않고 "모름"으로 보고).
+내장 모델 기준일 표(`lookahead-guard cutoffs`)는 OpenAI·Anthropic·Google·Meta 49개 계열(`gpt-3.5-turbo`, `llama-2`부터 `gpt-6-luna`, `claude-opus-5-5`까지)의 벤더 공개값입니다. 항목마다 확인한 벤더 문서(`source`), 벤더 원문 표현(`stated`), 확인 날짜(`checked`, 최근 2026-10-18), 공식 문서로 확인됐는지(`verified`)를 남겨 두었고, `lookahead-guard cutoffs 모델명`으로 출처를 볼 수 있습니다. `--cutoffs my_cutoffs.json`(`{"my-finetune-v3": "2024-03"}`)으로 추가하거나 `--cutoff 2024-06`으로 강제할 수 있습니다. 더 새 버전은 옛 항목에 매칭하지 않습니다(`claude-opus-5-6`은 `claude-opus-5` 날짜를 물려받지 않고 "모름"으로 보고).
 
 ## CI에서 쓰기
 
@@ -116,6 +118,9 @@ n=200  raw=1.000  masked=0.570  gap=+0.430 (95% CI +0.361 to +0.499)
 - **증명이 아니라 휴리스틱입니다.** 정규식과 단어 목록이라 특이한 표현은 놓치고 무해한 문장을 잡기도 합니다. 깨끗한 리포트가 깨끗한 백테스트를 뜻하지는 않습니다.
 - **마스킹은 재식별 위험을 줄일 뿐 없애지 못합니다.** 독특한 가격 경로나 유명한 숫자로도 시기를 알아챌 수 있습니다. 그래서 마스킹됐지만 노출된 기록은 warning으로 남깁니다.
 - **기준일은 벤더 공개값입니다.** 실효 기준일은 다를 수 있습니다([Dated Data, arXiv 2403.12958](https://arxiv.org/abs/2403.12958)). `--margin-days`로 보수적으로 잡고, 틀린 값은 PR로 알려 주세요.
+- **확인 못 한 항목이 2개 있습니다** (`verified: false`, `lookahead-guard cutoffs`에서 `NO`로 표시): `claude-3-sonnet`(2026-10-18에 Claude 3 모델 카드를 읽지 못함), `claude-opus-4-1`(시스템 카드에 기준일이 없고 은퇴한 모델 페이지는 사라짐, Claude Opus 4 값을 이어 씀). `claude-3-haiku`는 Anthropic이 아닌 Google Cloud 공식 Claude 페이지로 확인했습니다.
+- **벤더 문서끼리 다르면 더 늦은 날짜를 씁니다.** 기준일이 늦을수록 경고가 늘어날 뿐 줄지 않기 때문입니다. `gpt-4`는 OpenAI 현재 문서의 2023년 12월(예전 문서는 0314/0613 스냅샷을 2021년 9월로 표기), `claude-sonnet-4-6`은 모델 페이지의 학습 데이터 기준일 2026년 1월(고객센터 글은 2025년 8월)을 씁니다.
+- **아직 없는 모델:** Gemini 3.x·Gemini 4(구글 모델 페이지에 기준일이 없음), `gpt-5.4-mini`처럼 별도 벤더 페이지가 없는 변형, Llama 외 오픈 웨이트 모델.
 - 지금은 영어 텍스트와 미국 시장 식별자만 다룹니다.
 - 텍스트를 점검하지, 데이터 파이프라인을 점검하지 않습니다. 피처·분할 누수는 데이터 수준 도구와 함께 쓰세요.
 

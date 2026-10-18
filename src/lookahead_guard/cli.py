@@ -109,12 +109,17 @@ def _cmd_cutoffs(args) -> int:
         if mc is None:
             print(f"{args.model}: unknown (add it with --cutoffs FILE)")
             return EXIT_FINDINGS
-        print(f"{args.model}: {mc.id} ({mc.vendor}) cutoff {mc.cutoff.isoformat()} [{mc.kind}] {mc.note}".rstrip())
+        flag = "" if mc.verified or mc.kind == "user" else " (UNVERIFIED)"
+        print(f"{args.model}: {mc.id} ({mc.vendor}) cutoff {mc.cutoff.isoformat()} [{mc.kind}]{flag} {mc.note}".rstrip())
+        if mc.source:
+            print(f"  source: {mc.source} (checked {mc.checked or '?'})")
         return EXIT_OK
-    print(f"{'model':<22} {'vendor':<10} {'cutoff':<11} kind")
+    print(f"{'model':<20} {'vendor':<10} {'cutoff':<11} {'kind':<10} verified")
     for mc in table.entries():
-        print(f"{mc.id:<22} {mc.vendor:<10} {mc.cutoff.isoformat():<11} {mc.kind}")
-    print("\nVendor-reported values; verify before relying on them. 'cutoff' = last day the model may have seen.")
+        ok = "user" if mc.kind == "user" else ("yes" if mc.verified else "NO")
+        print(f"{mc.id:<20} {mc.vendor:<10} {mc.cutoff.isoformat():<11} {mc.kind:<10} {ok}")
+    print("\nVendor-reported values with a source URL per entry (`cutoffs MODEL` shows it).")
+    print("'cutoff' = last day the model may have seen. 'NO' = not confirmed on an official vendor page.")
     return EXIT_OK
 
 

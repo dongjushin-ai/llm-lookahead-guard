@@ -1,5 +1,7 @@
 # llm-lookahead-guard
 
+<p align="center"><img src="https://raw.githubusercontent.com/dongjushin-ai/llm-lookahead-guard/main/docs/assets/demo.gif" alt="Terminal demo: check a leaky log (errors), mask it, check again (passes), then the masked-vs-raw A/B gap" width="760"></p>
+
 **A linter for LLM backtests: finds look-ahead (temporal contamination) leaks in the prompts you sent and the answers you got back. Offline, zero dependencies, CI-ready.**
 
 [![CI](https://github.com/dongjushin-ai/llm-lookahead-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/dongjushin-ai/llm-lookahead-guard/actions/workflows/ci.yml)
@@ -70,7 +72,7 @@ A log is JSONL, one LLM decision per line. Field names are matched loosely, so m
 | `LAG301` response-cites-future | error | the **model's answer** states something that happened after `as_of`: a sign of recall |
 | `LAG302` response-hindsight | warning | hindsight wording in the answer |
 
-The bundled model table (`lookahead-guard cutoffs`) covers 28 OpenAI, Anthropic, Google and Meta model families, with vendor-reported cutoffs. Add your own with `--cutoffs my_cutoffs.json` (`{"my-finetune-v3": "2024-03"}`) or force one with `--cutoff 2024-06`. A newer model version is never matched to an older entry: `claude-sonnet-4-6` is reported as unknown, not given the `claude-sonnet-4` date.
+The bundled model table (`lookahead-guard cutoffs`) covers 49 OpenAI, Anthropic, Google and Meta model families, from `gpt-3.5-turbo` and `llama-2` to `gpt-6-luna` and `claude-opus-5-5`. Every entry records the vendor page it was checked against (`source`), the vendor's own wording (`stated`), the check date (`checked`, last 2026-10-18) and whether an official page confirmed it (`verified`); `lookahead-guard cutoffs MODEL` prints the source. Add your own with `--cutoffs my_cutoffs.json` (`{"my-finetune-v3": "2024-03"}`) or force one with `--cutoff 2024-06`. A newer model version is never matched to an older entry: `claude-opus-5-6` is reported as unknown, not given the `claude-opus-5` date.
 
 ## Use it in CI
 
@@ -141,6 +143,9 @@ They work well together. Use a point-in-time harness to run new experiments safe
 - **Heuristics, not proof.** The rules are regexes and word lists. They miss leaks phrased in unusual ways and sometimes flag harmless text. A clean report does not mean the backtest is clean.
 - **Masking lowers re-identification risk; it does not remove it.** A distinctive price path or a famous number can still tell an exposed model what period it is in. That is why a masked but exposed record stays a warning.
 - **Cutoffs are vendor-reported.** Effective cutoffs can differ ([Dated Data, arXiv 2403.12958](https://arxiv.org/abs/2403.12958)). Use `--margin-days` to be conservative, and please send a PR when a value is wrong.
+- **Two entries are not verified** (`verified: false`, shown as `NO` in `lookahead-guard cutoffs`): `claude-3-sonnet` (the Claude 3 model card could not be read on 2026-10-18) and `claude-opus-4-1` (its system card gives no cutoff and the retired model page is gone; the value is carried over from Claude Opus 4). `claude-3-haiku` is confirmed on Google Cloud's official Claude page rather than Anthropic's own.
+- **Where vendor pages disagree, the later date wins**, because a later cutoff can only add warnings. `gpt-4` uses OpenAI's current Dec 2023 (older docs said Sep 2021 for the 0314/0613 snapshots); `claude-sonnet-4-6` uses the model page's Jan 2026 training-data cutoff (the help center says Aug 2025).
+- **Not covered yet:** Gemini 3.x and Gemini 4 (Google's model pages give no knowledge cutoff), `gpt-5.4-mini` and other variants without their own vendor page, and open-weight models other than Llama.
 - English text and US-market identifiers only for now.
 - It checks text, not data pipelines. Pair it with a data-level tool for features and splits.
 

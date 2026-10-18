@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "llm-lookahead-guard"
 version = "0.1.0"
 description = "Lint LLM backtest prompts and logs for look-ahead (temporal contamination) leakage. Offline, zero dependencies."
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "DockY" }]
 requires-python = ">=3.9"
 dependencies = []
@@ -17,8 +18,16 @@ classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Financial and Insurance Industry",
-  "License :: OSI Approved :: MIT License",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Office/Business :: Financial :: Investment",
   "Topic :: Software Development :: Quality Assurance",
 ]
@@ -31,7 +40,10 @@ lookahead-guard = "lookahead_guard.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/dongjushin-ai/llm-lookahead-guard"
+Documentation = "https://github.com/dongjushin-ai/llm-lookahead-guard#readme"
+Source = "https://github.com/dongjushin-ai/llm-lookahead-guard"
 Issues = "https://github.com/dongjushin-ai/llm-lookahead-guard/issues"
+"Korean README" = "https://github.com/dongjushin-ai/llm-lookahead-guard/blob/main/README.ko.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
